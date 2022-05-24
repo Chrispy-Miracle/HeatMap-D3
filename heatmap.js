@@ -10,6 +10,8 @@ d3.json(url)
   .then((data) => callback(data))
   .catch((err) => console.log(err));
 
+
+
 function callback(data) {
 //   console.log('data: ', data);
 
@@ -24,6 +26,9 @@ d3.select("body")
     .attr("id", "title")
     .style("padding", "10px")
     .text("Monthly Global Land-Surface Temperature")
+    .style("text-align", "center")
+    .style("word-wrap", "breakword")
+    .style("width", "100vw")
     .style("text-shadow", "1px 1px 1px white")
 
 d3.select("body")
@@ -32,9 +37,57 @@ d3.select("body")
     .text("1753 - 2015: base temperature 8.66℃")
     .style("text-shadow", "1px 1px 1px white")
 
+    d3.select("body")
+    .append("h3")
+    .text("Legend: Degrees of Variation")    
+    .style("margin-top", "30px")
+    // .style("position", "absolute")
+    // .style("top", "675px")
+    // .style("left", "235px")
+    .style("text-shadow", "1px 1px 1px white");
+
+  const legend = d3.select("body")
+    .append("svg")
+    // .style("position", "absolute")
+    // .style("top", "680px")
+    // .style("left", "230px")
+    .attr("id", "legend")
+    .style("height", "90px")
+    .style("width", "290px")
+    .style("border", "1px solid black")
+    .style("background", "beige");
+
+    
+  const legendScale = d3.scaleLinear(colors)
+    .domain([-2,2])
+    .range([40,165])
+  
+  const legendAxis = d3.axisBottom(legendScale).ticks(4);
+    
+  legend.append("g")
+      .attr("transform", "translate(35, 60)")
+      .call(legendAxis);
+
+ 
+
+  legend.selectAll("rect")
+    .data(colors)
+    .enter()
+    .append("rect")
+    .attr("height", "30")
+    .attr("width", "30")
+    .attr("x", (d,i)=> (70+ i* 35) + "px")
+    .attr("y", "30px")
+    .attr("fill", (d)=> d)
+    .style("stroke", "black")
+    .style("border", "1px solid black")
+    .append("title")
+    .text((d, i)=>i== 0 ? "More than 1℃ less than average" : i==1 ? "Between 0 and 1℃ less than average" : i==2 ? "Between 0 and 1℃ degree more than average" : "More than 1℃ above average")
+
 
 const svg = d3.select("body")
     .append("svg")
+    .attr("id", "mainsvg")
     .style("background", "beige")
     .attr("height", h)
     .attr("width", w)
@@ -125,52 +178,7 @@ svg.selectAll("rect")
       return tooltip.style('left', (e.pageX+10) + "px").style('top', (e.pageY+10) + 'px')
         ;})
     .on("mouseout", function(){return tooltip.style("visibility", "hidden");}); 
-
-  const legend = d3.select("body")
-    .append("svg")
-    .style("position", "absolute")
-    .style("top", "680px")
-    .style("left", "230px")
-    .attr("id", "legend")
-    .style("height", "90px")
-    .style("width", "290px")
-    .style("border", "1px solid black")
-    .style("background", "beige");
-
-    
-  const legendScale = d3.scaleLinear(colors)
-    .domain([-2,2])
-    .range([40,165])
-  
-  const legendAxis = d3.axisBottom(legendScale).ticks(4);
-    
-  legend.append("g")
-      .attr("transform", "translate(35, 60)")
-      .call(legendAxis);
-
-  d3.select("body")
-    .append("h3")
-    .text("Legend: Degrees of Variation")    
-    .style("margin", "10px")
-    .style("position", "absolute")
-    .style("top", "675px")
-    .style("left", "235px")
-    .style("text-shadow", "1px 1px 1px white");
-
-
-  legend.selectAll("rect")
-    .data(colors)
-    .enter()
-    .append("rect")
-    .attr("height", "30")
-    .attr("width", "30")
-    .attr("x", (d,i)=> (70+ i* 35) + "px")
-    .attr("y", "30px")
-    .attr("fill", (d)=> d)
-    .style("stroke", "black")
-    .style("border", "1px solid black")
-    .append("title")
-    .text((d, i)=>i== 0 ? "More than 1℃ less than average" : i==1 ? "Between 0 and 1℃ less than average" : i==2 ? "Between 0 and 1℃ degree more than average" : "More than 1℃ above average")
+ 
 
 
 }
